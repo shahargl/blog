@@ -1,0 +1,27 @@
+/* Custom styles for your blog */
+/* Add your custom CSS here */
+
+/* Example: Custom link colors */
+a {
+    color: #007acc;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #005a9e;
+    text-decoration: underline;
+}
+
+/* Example: Custom code block styling */
+pre {
+    border-radius: 8px;
+    border: 1px solid #e1e4e8;
+}
+
+/* Example: Custom blockquote styling */
+blockquote {
+    border-left: 4px solid #007acc;
+    padding-left: 1rem;
+    margin-left: 0;
+    font-style: italic;
+}
