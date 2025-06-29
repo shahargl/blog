@@ -19,7 +19,7 @@ Edit `config.toml` and update the `baseURL` to match your GitHub Pages URL:
 
 ```toml
 # For repository-based GitHub Pages (recommended)
-baseURL = 'https://yourusername.github.io/your-repo-name/'
+baseURL = 'https://shahargl.github.io/blog/'
 
 # For user/organization GitHub Pages
 # baseURL = 'https://yourusername.github.io/'
@@ -206,7 +206,7 @@ Edit `config.toml` and update the giscus section with your actual IDs:
   provider = "giscus"
   
   [params.comments.giscus]
-    repo = "yourusername/your-repo-name"
+    repo = "shahargl/blog"
     repoId = "your-actual-repo-id"
     category = "Announcements"
     categoryId = "your-actual-category-id"
