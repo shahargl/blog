@@ -1,4 +1,4 @@
-baseURL = 'https://shaharglazner.github.io/blog/'
+baseURL = 'https://shahar.blog/'
 languageCode = 'en-us'
 title = 'Shahar Glazner - Dev Blog'
 theme = 'hugo-theme-stack'
@@ -11,10 +11,10 @@ theme = 'hugo-theme-stack'
   [params.author]
     name = "Shahar Glazner"
     email = "shahar@example.com"
-    link = "https://github.com/shaharglazner"
+    link = "https://github.com/shahargl"
   
   # Social links
-  github = "shaharglazner"
+  github = "shahargl"
   twitter = "shaharglazner"
   linkedin = "shaharglazner"
   
@@ -24,7 +24,7 @@ theme = 'hugo-theme-stack'
     provider = "giscus"
     
     [params.comments.giscus]
-      repo = "shaharglazner/blog"
+      repo = "shahargl/blog"
       repoId = "R_kgDOKj1234" # You'll need to replace this with your actual repo ID
       category = "Announcements"
       categoryId = "DIC_kwDOKj1234" # You'll need to replace this with your actual category ID
