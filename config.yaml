@@ -1,17 +1,17 @@
 baseURL: 'https://shahar.blog/'
 languageCode: 'en-us'
 defaultContentLanguage: 'en'
-defaultContentLanguageInSubdir: true  # This is important!
+defaultContentLanguageInSubdir: true  # This forces /en/ in URLs
 title: 'Shahar Glazner - Dev Blog'
 theme: 'hugo-theme-stack'
 
 # Multilingual configuration
 languages:
   en:
+    contentDir: 'content/en'  # CRITICAL: Must specify contentDir
     languageName: English
     languageCode: en-us
     languageDirection: ltr
-    contentDir: content/en
     title: Shahar Glazner - Dev Blog
     weight: 1
     params:
@@ -43,7 +43,7 @@ languages:
       main:
         - identifier: posts
           name: Posts
-          url: /en/posts/
+          url: /en/posts/    # Match the permalink from hugo list all
           weight: 10
         - identifier: tags
           name: Tags
@@ -55,14 +55,14 @@ languages:
           weight: 30
         - identifier: about
           name: About
-          url: /en/about/
+          url: /en/about/    # Match the permalink from hugo list all
           weight: 40
 
   he:
+    contentDir: 'content/he'  # CRITICAL: Must specify contentDir
     languageName: עברית
     languageCode: he-il
     languageDirection: rtl
-    contentDir: content/he
     title: שאר גלזנר - בלוג פיתוח
     weight: 2
     params:
@@ -94,7 +94,7 @@ languages:
       main:
         - identifier: posts
           name: פוסטים
-          url: /he/posts/
+          url: /he/posts/    # Match the permalink from hugo list all
           weight: 10
         - identifier: tags
           name: תגיות
@@ -106,7 +106,7 @@ languages:
           weight: 30
         - identifier: about
           name: אודות
-          url: /he/about/
+          url: /he/about/    # Match the permalink from hugo list all
           weight: 40
 
 # Markup configuration
