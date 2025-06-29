@@ -1,0 +1,107 @@
+baseURL: 'https://shahar.blog/'
+languageCode: 'en-us'
+title: 'Shahar Glazner - Dev Blog'
+theme: 'hugo-theme-stack'
+
+# Multilingual configuration
+languages:
+  en:
+    languageName: English
+    title: Shahar Glazner - Dev Blog
+    weight: 1
+    params:
+      description: "Personal development blog covering software engineering, web development, and tech insights"
+      author:
+        name: Shahar Glazner
+        email: shahar@example.com
+        link: https://github.com/shahargl
+      github: shahargl
+      twitter: shaharglazner
+      linkedin: shaharglazner
+      comments:
+        enabled: true
+        provider: giscus
+        giscus:
+          repo: shahargl/blog
+          repoID: R_kgDOPDwrew
+          category: Announcements
+          categoryID: DIC_kwDOPDwre84CsM_C
+          mapping: pathname
+          strict: 0
+          reactionsEnabled: 1
+          emitMetadata: 0
+          inputPosition: bottom
+          theme: preferred_color_scheme
+          lang: en
+          loading: lazy
+
+  he:
+    languageName: עברית
+    title: שאר גלזנר - בלוג פיתוח
+    weight: 2
+    params:
+      description: "בלוג פיתוח אישי המכסה הנדסת תוכנה, פיתוח web ותובנות טכנולוגיות"
+      author:
+        name: שאר גלזנר
+        email: shahar@example.com
+        link: https://github.com/shahargl
+      github: shahargl
+      twitter: shaharglazner
+      linkedin: shaharglazner
+      comments:
+        enabled: true
+        provider: giscus
+        giscus:
+          repo: shahargl/blog
+          repoID: R_kgDOPDwrew
+          category: Announcements
+          categoryID: DIC_kwDOPDwre84CsM_C
+          mapping: pathname
+          strict: 0
+          reactionsEnabled: 1
+          emitMetadata: 0
+          inputPosition: bottom
+          theme: preferred_color_scheme
+          lang: he
+          loading: lazy
+
+# Menu configuration
+menu:
+  main:
+    - identifier: posts
+      name: posts
+      url: /posts/
+      weight: 10
+    - identifier: tags
+      name: tags
+      url: /tags/
+      weight: 20
+    - identifier: categories
+      name: categories
+      url: /categories/
+      weight: 30
+    - identifier: about
+      name: about
+      url: /about/
+      weight: 40
+
+# Markup configuration
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+  highlight:
+    noClasses: false
+    style: github
+
+# Outputs
+outputs:
+  home: [HTML, RSS, JSON]
+
+# Output formats
+outputFormats:
+  RSS:
+    mediatype: application/rss+xml
+    baseName: feed
+    isPlainText: true
+    notAlternative: true 
