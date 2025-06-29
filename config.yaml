@@ -34,6 +34,24 @@ languages:
           theme: preferred_color_scheme
           lang: en
           loading: lazy
+    menu:
+      main:
+        - identifier: posts
+          name: posts
+          url: /posts/
+          weight: 10
+        - identifier: tags
+          name: tags
+          url: /tags/
+          weight: 20
+        - identifier: categories
+          name: categories
+          url: /categories/
+          weight: 30
+        - identifier: about
+          name: about
+          url: /about/
+          weight: 40
 
   he:
     languageName: עברית
@@ -64,26 +82,24 @@ languages:
           theme: preferred_color_scheme
           lang: he
           loading: lazy
-
-# Menu configuration
-menu:
-  main:
-    - identifier: posts
-      name: posts
-      url: /posts/
-      weight: 10
-    - identifier: tags
-      name: tags
-      url: /tags/
-      weight: 20
-    - identifier: categories
-      name: categories
-      url: /categories/
-      weight: 30
-    - identifier: about
-      name: about
-      url: /about/
-      weight: 40
+    menu:
+      main:
+        - identifier: posts
+          name: פוסטים
+          url: /he/posts/
+          weight: 10
+        - identifier: tags
+          name: תגיות
+          url: /he/tags/
+          weight: 20
+        - identifier: categories
+          name: קטגוריות
+          url: /he/categories/
+          weight: 30
+        - identifier: about
+          name: אודות
+          url: /he/about/
+          weight: 40
 
 # Markup configuration
 markup:
