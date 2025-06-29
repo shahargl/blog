@@ -25,14 +25,14 @@ theme = 'hugo-theme-stack'
     
     [params.comments.giscus]
       repo = "shahargl/blog"
-      repoId = "R_kgDOKj1234" # You'll need to replace this with your actual repo ID
+      repoId = "R_kgDOPDwrew"
       category = "Announcements"
-      categoryId = "DIC_kwDOKj1234" # You'll need to replace this with your actual category ID
+      categoryId = "DIC_kwDOPDwre84CsM_C"
       mapping = "pathname"
       strict = "0"
       reactionsEnabled = "1"
       emitMetadata = "0"
-      inputPosition = "top"
+      inputPosition = "bottom"
       theme = "preferred_color_scheme"
       lang = "en"
       loading = "lazy"
