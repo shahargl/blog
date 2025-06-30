@@ -25,3 +25,34 @@ blockquote {
     margin-left: 0;
     font-style: italic;
 }
+
+/* RTL-specific styles for Hebrew content */
+[dir="rtl"] blockquote {
+    border-left: none;
+    border-right: 4px solid #007acc;
+    padding-left: 0;
+    padding-right: 1rem;
+    margin-right: 0;
+}
+
+/* RTL text alignment */
+[dir="rtl"] {
+    text-align: right;
+}
+
+/* RTL list markers */
+[dir="rtl"] ul,
+[dir="rtl"] ol {
+    padding-right: 1.5em;
+    padding-left: 0;
+}
+
+/* RTL navigation */
+[dir="rtl"] .nav {
+    flex-direction: row-reverse;
+}
+
+/* RTL social icons */
+[dir="rtl"] .social-icons {
+    flex-direction: row-reverse;
+}

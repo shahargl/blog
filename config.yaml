@@ -3,7 +3,7 @@ languageCode: 'en-us'
 defaultContentLanguage: 'en'
 defaultContentLanguageInSubdir: true  # This forces /en/ in URLs
 title: 'Shahar Glazner - Dev Blog'
-theme: 'hugo-theme-stack'
+theme: 'PaperMod'
 
 # Multilingual configuration
 languages:
@@ -23,22 +23,47 @@ languages:
       github: shahargl
       twitter: shaharglazner
       linkedin: shaharglazner
-      comments:
+      comments: true
+      giscus:
+        repo: shahargl/blog
+        repoID: R_kgDOPDwrew
+        category: Announcements
+        categoryID: DIC_kwDOPDwre84CsM_C
+        mapping: pathname
+        strict: 0
+        reactionsEnabled: 1
+        emitMetadata: 0
+        inputPosition: bottom
+        theme: preferred_color_scheme
+        lang: en
+        loading: lazy
+      profileMode:
         enabled: true
-        provider: giscus
-        giscus:
-          repo: shahargl/blog
-          repoID: R_kgDOPDwrew
-          category: Announcements
-          categoryID: DIC_kwDOPDwre84CsM_C
-          mapping: pathname
-          strict: 0
-          reactionsEnabled: 1
-          emitMetadata: 0
-          inputPosition: bottom
-          theme: preferred_color_scheme
-          lang: en
-          loading: lazy
+        title: "Shahar Glazner"
+        subtitle: "Software Engineer & Web Developer"
+        imageUrl: "/avatar.png"
+        imageTitle: "Shahar Glazner"
+        buttons:
+          - name: Posts
+            url: posts
+          - name: Tags
+            url: tags
+          - name: About
+            url: about
+      ShowReadingTime: true
+      ShowShareButtons: true
+      ShowPostNavLinks: true
+      ShowBreadCrumbs: true
+      ShowCodeCopyButtons: true
+      ShowRssButtonInSectionTermList: true
+      ShowWordCount: true
+      ShowFullTextinRSS: true
+      disableSpecial1stPost: false
+      disableScrollToTop: false
+      hidemeta: false
+      hideSummary: false
+      showtoc: false
+      tocopen: false
     menu:
       main:
         - identifier: posts
@@ -74,22 +99,47 @@ languages:
       github: shahargl
       twitter: shaharglazner
       linkedin: shaharglazner
-      comments:
+      comments: true
+      giscus:
+        repo: shahargl/blog
+        repoID: R_kgDOPDwrew
+        category: Announcements
+        categoryID: DIC_kwDOPDwre84CsM_C
+        mapping: pathname
+        strict: 0
+        reactionsEnabled: 1
+        emitMetadata: 0
+        inputPosition: bottom
+        theme: preferred_color_scheme
+        lang: he
+        loading: lazy
+      profileMode:
         enabled: true
-        provider: giscus
-        giscus:
-          repo: shahargl/blog
-          repoID: R_kgDOPDwrew
-          category: Announcements
-          categoryID: DIC_kwDOPDwre84CsM_C
-          mapping: pathname
-          strict: 0
-          reactionsEnabled: 1
-          emitMetadata: 0
-          inputPosition: bottom
-          theme: preferred_color_scheme
-          lang: he
-          loading: lazy
+        title: "שאר גלזנר"
+        subtitle: "מהנדס תוכנה ומפתח Web"
+        imageUrl: "/avatar.png"
+        imageTitle: "שאר גלזנר"
+        buttons:
+          - name: פוסטים
+            url: posts
+          - name: תגיות
+            url: tags
+          - name: אודות
+            url: about
+      ShowReadingTime: true
+      ShowShareButtons: true
+      ShowPostNavLinks: true
+      ShowBreadCrumbs: true
+      ShowCodeCopyButtons: true
+      ShowRssButtonInSectionTermList: true
+      ShowWordCount: true
+      ShowFullTextinRSS: true
+      disableSpecial1stPost: false
+      disableScrollToTop: false
+      hidemeta: false
+      hideSummary: false
+      showtoc: false
+      tocopen: false
     menu:
       main:
         - identifier: posts
@@ -125,7 +175,6 @@ outputs:
 # Output formats
 outputFormats:
   RSS:
-    mediatype: application/rss+xml
     baseName: feed
     isPlainText: true
     notAlternative: true

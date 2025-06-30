@@ -1,0 +1,7 @@
+{{- /* Comments area start */ -}}
+{{- if .Site.Params.giscus -}}
+<div class="comments">
+    {{- partial "comments/giscus.html" . -}}
+</div>
+{{- end -}}
+{{- /* Comments area end */ -}} 

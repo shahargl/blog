@@ -1,13 +1,17 @@
 baseURL: 'https://shahar.blog/'
 languageCode: 'en-us'
+defaultContentLanguage: 'en'
+defaultContentLanguageInSubdir: true
 title: 'Shahar Glazner - Dev Blog'
-theme: 'hugo-theme-stack'
+theme: 'PaperMod'
 
 # Multilingual configuration
 languages:
   en:
+    contentDir: 'content/en'
     languageName: English
-    languageCode: en
+    languageCode: en-us
+    languageDirection: ltr
     title: Shahar Glazner - Dev Blog
     weight: 1
     params:
@@ -19,44 +23,70 @@ languages:
       github: shahargl
       twitter: shaharglazner
       linkedin: shaharglazner
-      comments:
+      comments: true
+      giscus:
+        repo: shahargl/blog
+        repoID: R_kgDOPDwrew
+        category: Announcements
+        categoryID: DIC_kwDOPDwre84CsM_C
+        mapping: pathname
+        strict: 0
+        reactionsEnabled: 1
+        emitMetadata: 0
+        inputPosition: bottom
+        theme: preferred_color_scheme
+        lang: en
+        loading: lazy
+      profileMode:
         enabled: true
-        provider: giscus
-        giscus:
-          repo: shahargl/blog
-          repoID: R_kgDOPDwrew
-          category: Announcements
-          categoryID: DIC_kwDOPDwre84CsM_C
-          mapping: pathname
-          strict: 0
-          reactionsEnabled: 1
-          emitMetadata: 0
-          inputPosition: bottom
-          theme: preferred_color_scheme
-          lang: en
-          loading: lazy
+        title: "Shahar Glazner"
+        subtitle: "Software Engineer & Web Developer"
+        imageUrl: "/avatar.png"
+        imageTitle: "Shahar Glazner"
+        buttons:
+          - name: Posts
+            url: posts
+          - name: Tags
+            url: tags
+          - name: About
+            url: about
+      ShowReadingTime: true
+      ShowShareButtons: true
+      ShowPostNavLinks: true
+      ShowBreadCrumbs: true
+      ShowCodeCopyButtons: true
+      ShowRssButtonInSectionTermList: true
+      ShowWordCount: true
+      ShowFullTextinRSS: true
+      disableSpecial1stPost: false
+      disableScrollToTop: false
+      hidemeta: false
+      hideSummary: false
+      showtoc: false
+      tocopen: false
     menu:
       main:
         - identifier: posts
-          name: posts
-          url: /posts/
+          name: Posts
+          url: /en/posts/
           weight: 10
         - identifier: tags
-          name: tags
-          url: /tags/
+          name: Tags
+          url: /en/tags/
           weight: 20
         - identifier: categories
-          name: categories
-          url: /categories/
+          name: Categories
+          url: /en/categories/
           weight: 30
         - identifier: about
-          name: about
-          url: /about/
+          name: About
+          url: /en/about/
           weight: 40
 
   he:
+    contentDir: 'content/he'
     languageName: עברית
-    languageCode: he
+    languageCode: he-il
     languageDirection: rtl
     title: שאר גלזנר - בלוג פיתוח
     weight: 2
@@ -69,22 +99,47 @@ languages:
       github: shahargl
       twitter: shaharglazner
       linkedin: shaharglazner
-      comments:
+      comments: true
+      giscus:
+        repo: shahargl/blog
+        repoID: R_kgDOPDwrew
+        category: Announcements
+        categoryID: DIC_kwDOPDwre84CsM_C
+        mapping: pathname
+        strict: 0
+        reactionsEnabled: 1
+        emitMetadata: 0
+        inputPosition: bottom
+        theme: preferred_color_scheme
+        lang: he
+        loading: lazy
+      profileMode:
         enabled: true
-        provider: giscus
-        giscus:
-          repo: shahargl/blog
-          repoID: R_kgDOPDwrew
-          category: Announcements
-          categoryID: DIC_kwDOPDwre84CsM_C
-          mapping: pathname
-          strict: 0
-          reactionsEnabled: 1
-          emitMetadata: 0
-          inputPosition: bottom
-          theme: preferred_color_scheme
-          lang: he
-          loading: lazy
+        title: "שאר גלזנר"
+        subtitle: "מהנדס תוכנה ומפתח Web"
+        imageUrl: "/avatar.png"
+        imageTitle: "שאר גלזנר"
+        buttons:
+          - name: פוסטים
+            url: posts
+          - name: תגיות
+            url: tags
+          - name: אודות
+            url: about
+      ShowReadingTime: true
+      ShowShareButtons: true
+      ShowPostNavLinks: true
+      ShowBreadCrumbs: true
+      ShowCodeCopyButtons: true
+      ShowRssButtonInSectionTermList: true
+      ShowWordCount: true
+      ShowFullTextinRSS: true
+      disableSpecial1stPost: false
+      disableScrollToTop: false
+      hidemeta: false
+      hideSummary: false
+      showtoc: false
+      tocopen: false
     menu:
       main:
         - identifier: posts
@@ -123,7 +178,6 @@ outputs:
 # Output formats
 outputFormats:
   RSS:
-    mediatype: application/rss+xml
     baseName: feed
     isPlainText: true
     notAlternative: true 
