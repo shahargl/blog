@@ -37,7 +37,7 @@ languages:
       
   he:
     languageName: עברית
-    title: שאר גלזנר - בלוג פיתוח
+    title: שחר גלזנר - בלוג פיתוח
     weight: 2
     params:
       description: "בלוג פיתוח אישי המכסה הנדסת תוכנה, פיתוח web ותובנות טכנולוגיות"

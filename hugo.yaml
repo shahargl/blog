@@ -88,12 +88,12 @@ languages:
     languageName: עברית
     languageCode: he-il
     languageDirection: rtl
-    title: שאר גלזנר - בלוג פיתוח
+    title: שחר גלזנר - בלוג פיתוח
     weight: 2
     params:
       description: "בלוג פיתוח אישי המכסה הנדסת תוכנה, פיתוח web ותובנות טכנולוגיות"
       author:
-        name: שאר גלזנר
+        name: שחר גלזנר
         email: shahar@example.com
         link: https://github.com/shahargl
       github: shahargl
@@ -115,10 +115,10 @@ languages:
         loading: lazy
       profileMode:
         enabled: true
-        title: "שאר גלזנר"
+        title: "שחר גלזנר"
         subtitle: "מהנדס תוכנה ומפתח Web"
         imageUrl: "/avatar.png"
-        imageTitle: "שאר גלזנר"
+        imageTitle: "שחר גלזנר"
         buttons:
           - name: פוסטים
             url: posts
