@@ -10,11 +10,13 @@ A modern, fast personal blog built with Hugo and featuring giscus comments for b
 - 🚀 **Auto-deploy**: GitHub Actions automatically builds and deploys to GitHub Pages
 - 🎨 **Customizable**: Easy to customize theme and styling
 - 📊 **SEO Optimized**: Built-in SEO features and meta tags
+- ⚛️ **React Apps**: Standalone React applications integrated with the blog
 
 ## Tech Stack
 
 - **[Hugo](https://gohugo.io/)**: Static site generator
 - **[Stack Theme](https://github.com/CaiJimmy/hugo-theme-stack)**: Clean and modern theme
+- **[React](https://react.dev/)**: Interactive applications with Vite
 - **[Giscus](https://giscus.app/)**: GitHub Discussions-powered comments
 - **[GitHub Pages](https://pages.github.com/)**: Hosting and deployment
 - **[GitHub Actions](https://github.com/features/actions)**: CI/CD pipeline
@@ -55,6 +57,18 @@ hugo new posts/your-post-title.md
 ```
 
 Edit the front matter and content, then save. The post will appear in your blog.
+
+### Creating React Apps
+
+```bash
+cd apps
+npm create vite@latest my-app -- --template react
+cd my-app
+npm install
+# Update vite.config.js with base: '/apps/my-app/'
+```
+
+See [APPS.md](APPS.md) for React apps integration guide and [LOCAL.md](LOCAL.md) for local development workflow.
 
 ## Setting Up Giscus Comments
 

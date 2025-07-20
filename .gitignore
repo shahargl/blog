@@ -41,4 +41,14 @@ yarn-debug.log*
 yarn-error.log*
 
 # Hugo cache
-.cache/ 
+.cache/
+
+# React app build outputs
+apps/*/dist/
+apps/*/node_modules/
+
+# Hugo resources directory
+resources/
+
+# Static app copies (auto-generated from apps/*/dist/)
+static/apps/ 

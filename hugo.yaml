@@ -46,6 +46,8 @@ languages:
         buttons:
           - name: Posts
             url: posts
+          - name: Apps
+            url: apps
           - name: Tags
             url: tags
           - name: About
@@ -70,6 +72,10 @@ languages:
           name: Posts
           url: /en/posts/
           weight: 10
+        - identifier: apps
+          name: Apps
+          url: /en/apps/
+          weight: 15
         - identifier: tags
           name: Tags
           url: /en/tags/
@@ -122,6 +128,8 @@ languages:
         buttons:
           - name: פוסטים
             url: posts
+          - name: אפליקציות
+            url: apps
           - name: תגיות
             url: tags
           - name: אודות
@@ -146,6 +154,10 @@ languages:
           name: פוסטים
           url: /he/posts/
           weight: 10
+        - identifier: apps
+          name: אפליקציות
+          url: /he/apps/
+          weight: 15
         - identifier: tags
           name: תגיות
           url: /he/tags/
