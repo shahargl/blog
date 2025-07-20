@@ -1,7 +1,7 @@
 # Hugo Blog Makefile
 # Common tasks for managing your Hugo blog
 
-.PHONY: help server build clean new-post deploy setup
+.PHONY: help server build clean new-post deploy setup build-apps copy-apps local clean-apps
 
 # Default target
 help:
@@ -14,6 +14,12 @@ help:
 	@echo "  deploy     - Build and prepare for deployment"
 	@echo "  update     - Update Hugo theme"
 	@echo "  check      - Check for common issues"
+	@echo ""
+	@echo "React Apps commands:"
+	@echo "  build-apps - Build all React apps"
+	@echo "  copy-apps  - Copy built apps to Hugo static directory"
+	@echo "  local      - Build apps and start Hugo server (full local dev)"
+	@echo "  clean-apps - Clean all app build artifacts"
 
 # Initialize the blog
 setup:
@@ -61,6 +67,51 @@ update:
 	@echo "🔄 Updating Hugo theme..."
 	@git submodule update --remote --merge
 	@echo "✅ Theme updated!"
+
+# Build all React apps
+build-apps:
+	@echo "📦 Building all React apps..."
+	@for dir in apps/*/; do \
+		if [ -f "$$dir/package.json" ]; then \
+			app_name=$$(basename "$$dir"); \
+			echo "🔨 Building $$app_name..."; \
+			cd "$$dir" && npm install && npm run build && cd ../..; \
+			echo "✅ $$app_name built successfully"; \
+		fi; \
+	done
+	@echo "🎉 All React apps built!"
+
+# Copy built React apps to Hugo static directory
+copy-apps:
+	@echo "📁 Copying React apps to Hugo static directory..."
+	@mkdir -p static/apps
+	@for dir in apps/*/; do \
+		if [ -d "$$dir/dist" ]; then \
+			app_name=$$(basename "$$dir"); \
+			echo "📋 Copying $$app_name..."; \
+			mkdir -p "static/apps/$$app_name"; \
+			cp -r "$$dir/dist/"* "static/apps/$$app_name/" 2>/dev/null || \
+			cp -r "$$dir/dist/." "static/apps/$$app_name/"; \
+			echo "✅ $$app_name copied to static/apps/$$app_name"; \
+		fi; \
+	done
+	@echo "🎉 All apps copied to static directory!"
+
+# Full local development: build apps, copy them, and start Hugo server
+local:
+	@echo "🚀 Starting full local development..."
+	@$(MAKE) build-apps
+	@$(MAKE) copy-apps
+	@echo "🌐 Starting Hugo development server..."
+	@hugo server -D
+
+# Clean all React app build artifacts
+clean-apps:
+	@echo "🧹 Cleaning React app build artifacts..."
+	@rm -rf static/apps
+	@find apps -name 'dist' -type d -exec rm -rf {} + 2>/dev/null || true
+	@find apps -name 'node_modules' -type d -exec rm -rf {} + 2>/dev/null || true
+	@echo "✅ All React app artifacts cleaned!"
 
 # Check for common issues
 check:

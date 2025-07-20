@@ -1,0 +1,35 @@
+{
+  "name": "hugo-blog-with-react-apps",
+  "version": "1.0.0",
+  "description": "Hugo blog with integrated React applications",
+  "scripts": {
+    "build:apps": "for dir in apps/*/; do if [ -f \"$dir/package.json\" ]; then echo \"Building $(basename \"$dir\")\"; cd \"$dir\" && npm install && npm run build && cd ../..; fi; done",
+    "copy:apps": "mkdir -p static/apps && for dir in apps/*/; do if [ -d \"$dir/dist\" ]; then app_name=$(basename \"$dir\"); echo \"Copying $app_name\"; mkdir -p \"static/apps/$app_name\" && cp -r \"$dir/dist/\"* \"static/apps/$app_name/\" 2>/dev/null || cp -r \"$dir/dist/.\" \"static/apps/$app_name/\"; fi; done",
+    "local": "npm run build:apps && npm run copy:apps && hugo server -D",
+    "clean:apps": "rm -rf static/apps && find apps -name 'dist' -type d -exec rm -rf {} + 2>/dev/null || true",
+    "clean:all": "npm run clean:apps && rm -rf public/ resources/ .hugo_build.lock",
+    "dev:hello-world": "cd apps/hello-world && npm run dev",
+    "build:hello-world": "cd apps/hello-world && npm run build",
+    "test:build": "npm run build:apps && npm run copy:apps && hugo --minify --gc",
+    "serve:built": "hugo server --source public --bind 0.0.0.0 --port 8080"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shahargl/blog.git"
+  },
+  "keywords": [
+    "hugo",
+    "react",
+    "blog",
+    "static-site",
+    "vite",
+    "github-pages"
+  ],
+  "author": "Shahar Glazner",
+  "license": "MIT",
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+} 
