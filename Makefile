@@ -19,7 +19,7 @@ serve: $(BIN)/python
 post:
 	@test -n "$(title)" || (echo 'usage: make post title="My new post"' && exit 1)
 	@slug=$$(echo "$(title)" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-|-$$//g'); \
-	file=content/posts/$$slug.md; \
+	mkdir -p content/posts; file=content/posts/$$slug.md; \
 	test ! -e $$file || (echo "$$file already exists" && exit 1); \
 	printf -- '---\ntitle: "%s"\ndate: %s\ndescription: ""\ntags: []\ndraft: true\n---\n\n' "$(title)" "$$(date +%Y-%m-%dT%H:%M:%S%z | sed -E 's/([0-9]{2})([0-9]{2})$$/\1:\2/')" > $$file; \
 	echo "created $$file"

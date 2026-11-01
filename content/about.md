@@ -20,12 +20,4 @@ communication channels:
 
 * find me on [GitHub](https://github.com/shahargl)
 * reach out to me on [X](https://x.com/shaharglazner)
-
-## About this Website
-
-The website is written in Markdown and built with a small Python script. It
-is hosted on GitHub Pages and the source code can be found on
-[GitHub](https://github.com/shahargl/blog).
-
-Every page is also available as plain Markdown. Look for the "view markdown"
-link at the bottom of a page.
+* connect with me on [LinkedIn](https://www.linkedin.com/in/shahar-glazner-29294654/)

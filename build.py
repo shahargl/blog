@@ -37,6 +37,7 @@ SITE = {
     "image": "/avatar.jpg",
     "github": "shahargl",
     "x": "shaharglazner",
+    "linkedin": "https://www.linkedin.com/in/shahar-glazner-29294654/",
     "source": "https://github.com/shahargl/blog",
     "per_page": 10,
     "feed_limit": 20,
@@ -193,8 +194,9 @@ def footer(page):
         f'<footer class="site-footer">{actions}'
         f"<p>&copy; Copyright {datetime.now().year} by {escape(SITE['author'])}.</p>"
         "<p>Contact me via "
-        f'<a href="https://x.com/{SITE["x"]}">x</a> or '
-        f'<a href="https://github.com/{SITE["github"]}">github</a>. '
+        f'<a href="https://x.com/{SITE["x"]}">x</a>, '
+        f'<a href="https://github.com/{SITE["github"]}">github</a> or '
+        f'<a href="{SITE["linkedin"]}">linkedin</a>. '
         'Subscribe via <a href="/feed.xml">rss</a>. '
         f'Source on <a href="{SITE["source"]}">github</a>.</p>'
         '<p class="theme-switch">Color scheme: '
