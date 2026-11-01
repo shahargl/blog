@@ -4,10 +4,8 @@ date: 2024-01-15T10:00:00-05:00
 draft: false
 description: "A comprehensive guide to setting up a personal blog with Hugo and integrating giscus comments for better reader engagement."
 tags: ["hugo", "giscus", "blog", "web-development"]
-categories: ["tutorials"]
+aliases: [/en/posts/getting-started-with-hugo-and-giscus/, /posts/getting-started-with-hugo-and-giscus/]
 ---
-
-# Getting Started with Hugo and Giscus Comments
 
 Building a personal blog can be an exciting journey, especially when you choose the right tools. In this post, I'll walk you through setting up a Hugo-based blog with giscus comments integration for better reader engagement.
 

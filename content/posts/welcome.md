@@ -4,11 +4,8 @@ date: 2024-01-15T10:00:00-05:00
 draft: false
 description: "Welcome to my new blog built with Hugo and giscus comments."
 tags: ["welcome", "first-post"]
-categories: ["general"]
-author: "Shahar Glazner"
+aliases: [/en/posts/welcome/, /posts/welcome/]
 ---
-
-# Welcome to My Blog! 🎉
 
 Hello and welcome to my new blog! This is my first post using Hugo and giscus comments.
 

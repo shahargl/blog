@@ -4,10 +4,8 @@ date: 2024-01-20T14:30:00-05:00
 draft: false
 description: "Exploring the challenges and solutions when building modern web applications with React, Node.js, and cloud services."
 tags: ["react", "nodejs", "web-development", "cloud", "architecture"]
-categories: ["development"]
+aliases: [/en/posts/building-a-modern-web-app/, /posts/building-a-modern-web-app/]
 ---
-
-# Building a Modern Web Application: A Developer's Journey
 
 Modern web development has evolved significantly over the past decade. Today's applications need to be fast, scalable, and user-friendly while handling complex business logic. In this post, I'll share my experience building a modern web application and the lessons learned along the way.
 
