@@ -507,31 +507,84 @@ pre code {
   font-size: 9px;
 }
 
-.heatmap rect,
-.legend .cell {
-  fill: var(--fg);
-  background: var(--fg);
+.heatmap.github {
+  --h0: #ebedf0;
+  --h1: #9be9a8;
+  --h2: #40c463;
+  --h3: #30a14e;
+  --h4: #216e39;
 }
 
-.heatmap .l0,
-.legend .l0 {
-  fill: var(--faint);
-  background: var(--faint);
+.heatmap.strava {
+  --h0: #ebedf0;
+  --h1: #ffd3bb;
+  --h2: #fea578;
+  --h3: #fd7a3d;
+  --h4: #fc4c02;
 }
 
-.heatmap .l1,
-.legend .l1 {
-  opacity: 0.3;
+:root[data-theme="dark"] .heatmap.github {
+  --h0: #1a1a1a;
+  --h1: #0e4429;
+  --h2: #006d32;
+  --h3: #26a641;
+  --h4: #39d353;
 }
 
-.heatmap .l2,
-.legend .l2 {
-  opacity: 0.55;
+:root[data-theme="dark"] .heatmap.strava {
+  --h0: #1a1a1a;
+  --h1: #4a1d07;
+  --h2: #8a3207;
+  --h3: #c94104;
+  --h4: #fc4c02;
 }
 
-.heatmap .l3,
-.legend .l3 {
-  opacity: 0.8;
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .heatmap.github {
+    --h0: #1a1a1a;
+    --h1: #0e4429;
+    --h2: #006d32;
+    --h3: #26a641;
+    --h4: #39d353;
+  }
+
+  :root:not([data-theme="light"]) .heatmap.strava {
+    --h0: #1a1a1a;
+    --h1: #4a1d07;
+    --h2: #8a3207;
+    --h3: #c94104;
+    --h4: #fc4c02;
+  }
+}
+
+.heatmap .l0 {
+  fill: var(--h0);
+  background: var(--h0);
+}
+
+.heatmap .l1 {
+  fill: var(--h1);
+  background: var(--h1);
+}
+
+.heatmap .l2 {
+  fill: var(--h2);
+  background: var(--h2);
+}
+
+.heatmap .l3 {
+  fill: var(--h3);
+  background: var(--h3);
+}
+
+.heatmap .l4 {
+  fill: var(--h4);
+  background: var(--h4);
+}
+
+
+.heatmap rect {
+  rx: 2px;
 }
 
 .heatmap-meta {

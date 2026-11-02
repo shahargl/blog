@@ -188,7 +188,7 @@ def legend():
 
 def figure(title, link, svg_markup, summary):
     return (
-        f'<figure class="heatmap"><figcaption><a href="{link}">{title}</a></figcaption>'
+        f'<figure class="heatmap {title.lower()}"><figcaption><a href="{link}">{title}</a></figcaption>'
         f'<div class="heatmap-scroll">{svg_markup}</div>'
         f'<p class="meta heatmap-meta"><span>{summary}</span>{legend()}</p></figure>'
     )

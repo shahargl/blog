@@ -23,8 +23,4 @@ communication channels:
 * reach out to me on [X](https://x.com/shaharglazner)
 * connect with me on [LinkedIn](https://www.linkedin.com/in/shahar-glazner-29294654/)
 
-## Heatmaps
-
-What I've been up to over the last year, in code and on foot.
-
 <!-- heatmaps -->
