@@ -655,27 +655,27 @@ pre code {
 
 .heatmap.x {
   --h0: #ebedf0;
-  --h1: #c6e6fc;
-  --h2: #8ecdf8;
-  --h3: #4fb4f5;
-  --h4: #1da1f2;
+  --h1: #c8c8c8;
+  --h2: #969696;
+  --h3: #5c5c5c;
+  --h4: #111111;
 }
 
 :root[data-theme="dark"] .heatmap.x {
   --h0: #1a1a1a;
-  --h1: #0b2a3f;
-  --h2: #0f4c75;
-  --h3: #1577b4;
-  --h4: #1da1f2;
+  --h1: #3d3d3d;
+  --h2: #6e6e6e;
+  --h3: #a8a8a8;
+  --h4: #f2f2f2;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .heatmap.x {
     --h0: #1a1a1a;
-    --h1: #0b2a3f;
-    --h2: #0f4c75;
-    --h3: #1577b4;
-    --h4: #1da1f2;
+    --h1: #3d3d3d;
+    --h2: #6e6e6e;
+    --h3: #a8a8a8;
+    --h4: #f2f2f2;
   }
 }
 
