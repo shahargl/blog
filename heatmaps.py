@@ -214,9 +214,12 @@ def legend():
     return f'<span class="legend">less {cells} more</span>'
 
 
-def figure(kind, title, link, svg_markup, summary):
+def figure(kind, title, link, svg_markup, summary, subtitle=None):
+    caption = f'<a href="{link}">{title}</a>'
+    if subtitle:
+        caption += f' <span class="heatmap-subtitle">{subtitle}</span>'
     return (
-        f'<figure class="heatmap {kind}"><figcaption><a href="{link}">{title}</a></figcaption>'
+        f'<figure class="heatmap {kind}"><figcaption>{caption}</figcaption>'
         f'<div class="heatmap-scroll">{svg_markup}</div>'
         f'<p class="meta heatmap-meta"><span>{summary}</span>{legend()}</p></figure>'
     )
@@ -270,10 +273,11 @@ def render(data, github_login):
         seconds = sum(day["seconds"] for day in recent)
         sections.append(figure(
             "strava",
-            "Strava (running)",
+            "Strava",
             f"https://www.strava.com/athletes/{data['strava']['athlete']}",
             svg(weeks, describe_strava, "Runs over the last year"),
             f"{plural(runs, 'run')}, {km:,.0f} km, avg {pace(seconds, km)} in the last year",
+            subtitle="running",
         ))
 
     if "x" in data:
@@ -286,7 +290,7 @@ def render(data, github_login):
         posts = sum(days[key]["count"] for key in in_range if key in days)
         sections.append(figure(
             "x",
-            "Twitter",
+            "X",
             f"https://x.com/{data['x']['username']}",
             svg(weeks, describe_x, "Posts on X over the last year"),
             f"{plural(posts, 'post')} in the last year",

@@ -489,6 +489,12 @@ pre code {
   margin-bottom: 0.5rem;
 }
 
+.heatmap-subtitle {
+  margin-inline-start: 0.35em;
+  font-weight: 400;
+  color: var(--muted);
+}
+
 .heatmap-scroll {
   overflow-x: auto;
   direction: ltr;
