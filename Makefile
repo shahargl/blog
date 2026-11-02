@@ -2,7 +2,9 @@ PYTHON ?= python3
 VENV := .venv
 BIN := $(VENV)/bin
 
-.PHONY: build serve post clean
+export GITHUB_TOKEN ?= $(shell gh auth token 2>/dev/null)
+
+.PHONY: build serve post clean strava-auth
 
 $(BIN)/python: requirements.txt
 	$(PYTHON) -m venv $(VENV)
@@ -24,5 +26,8 @@ post:
 	printf -- '---\ntitle: "%s"\ndate: %s\ndescription: ""\ntags: []\ndraft: true\n---\n\n' "$(title)" "$$(date +%Y-%m-%dT%H:%M:%S%z | sed -E 's/([0-9]{2})([0-9]{2})$$/\1:\2/')" > $$file; \
 	echo "created $$file"
 
+strava-auth:
+	$(PYTHON) strava_auth.py
+
 clean:
-	rm -rf public
+	rm -rf public .cache

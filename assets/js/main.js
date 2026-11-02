@@ -69,6 +69,10 @@
     });
   });
 
+  document.querySelectorAll(".heatmap-scroll").forEach(function (element) {
+    element.scrollLeft = element.scrollWidth;
+  });
+
   var comments = document.getElementById("comments");
   if (comments) {
     var script = document.createElement("script");

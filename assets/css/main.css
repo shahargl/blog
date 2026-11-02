@@ -476,6 +476,92 @@ pre code {
   margin-top: 0;
 }
 
+/* heatmaps */
+
+.heatmap {
+  margin: 1.75rem 0 2rem;
+}
+
+.heatmap figcaption {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.heatmap-scroll {
+  overflow-x: auto;
+  direction: ltr;
+}
+
+.heatmap svg {
+  display: block;
+  width: 100%;
+  min-width: 560px;
+  height: auto;
+}
+
+.heatmap text {
+  fill: var(--muted);
+  font-family: var(--mono);
+  font-size: 9px;
+}
+
+.heatmap rect,
+.legend .cell {
+  fill: var(--fg);
+  background: var(--fg);
+}
+
+.heatmap .l0,
+.legend .l0 {
+  fill: var(--faint);
+  background: var(--faint);
+}
+
+.heatmap .l1,
+.legend .l1 {
+  opacity: 0.3;
+}
+
+.heatmap .l2,
+.legend .l2 {
+  opacity: 0.55;
+}
+
+.heatmap .l3,
+.legend .l3 {
+  opacity: 0.8;
+}
+
+.heatmap-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  margin: 0.5rem 0 0;
+}
+
+.legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.legend .l0 {
+  margin-inline-start: 0.4em;
+}
+
+.legend .l4 {
+  margin-inline-end: 0.4em;
+}
+
+.legend .cell {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+}
+
 /* comments */
 
 .comments {

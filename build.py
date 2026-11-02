@@ -7,6 +7,7 @@
 
 import hashlib
 import json
+import os
 import re
 import shutil
 import sys
@@ -22,6 +23,8 @@ from pathlib import Path
 
 import markdown
 import yaml
+
+import heatmaps
 
 ROOT = Path(__file__).resolve().parent
 CONTENT = ROOT / "content"
@@ -39,6 +42,7 @@ SITE = {
     "x": "shaharglazner",
     "linkedin": "https://www.linkedin.com/in/shahar-glazner-29294654/",
     "source": "https://github.com/shahargl/blog",
+    "timezone": "Asia/Jerusalem",
     "per_page": 10,
     "feed_limit": 20,
     "nav": [("blog", "/"), ("about", "/about/")],
@@ -50,6 +54,8 @@ SITE = {
         "category-id": "DIC_kwDOPDwre84CsM_C",
     },
 }
+
+HEATMAPS_MARKER = "<!-- heatmaps -->"
 
 FRONT_MATTER = re.compile(r"\A---\s*\n(.*?)\n---\s*\n?(.*)\Z", re.S)
 
@@ -394,8 +400,22 @@ def fingerprint(relative):
     return url
 
 
+def load_env():
+    env_file = ROOT / ".env"
+    if not env_file.exists():
+        return
+    for line in env_file.read_text().splitlines():
+        key, sep, value = line.strip().partition("=")
+        if sep and not key.startswith("#"):
+            os.environ.setdefault(key.strip(), value.strip().strip("'\""))
+
+
 def build():
     posts, pages = load_content()
+    if any(HEATMAPS_MARKER in page.html for page in posts + pages):
+        section = heatmaps.render(heatmaps.load(SITE["github"], SITE["timezone"]), SITE["github"])
+        for page in posts + pages:
+            page.html = page.html.replace(HEATMAPS_MARKER, section)
     if OUT.exists():
         shutil.rmtree(OUT)
     shutil.copytree(STATIC, OUT)
@@ -453,7 +473,7 @@ def build():
 
 
 def snapshot():
-    files = [ROOT / "build.py", *CONTENT.rglob("*"), *ASSETS.rglob("*"), *STATIC.rglob("*")]
+    files = [ROOT / "build.py", ROOT / "heatmaps.py", *CONTENT.rglob("*"), *ASSETS.rglob("*"), *STATIC.rglob("*")]
     return {path: path.stat().st_mtime for path in files if path.is_file()}
 
 
@@ -479,6 +499,7 @@ def serve(port=8000):
 
 
 if __name__ == "__main__":
+    load_env()
     if sys.argv[1:2] == ["serve"]:
         serve(int(sys.argv[2]) if len(sys.argv) > 2 else 8000)
     else:
