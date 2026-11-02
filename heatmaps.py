@@ -303,12 +303,13 @@ def legend():
 
 
 def profile(entry, heatmap=None):
-    caption = f'<a class="profile-link" href="{entry["url"]}">{icon(entry["icon"])}<span>{entry["name"]}</span></a>'
+    name = f'<span class="visually-hidden">{entry["name"]}</span>' if entry.get("logo_only") else f'<span>{entry["name"]}</span>'
+    caption = f'<a class="profile-link" href="{entry["url"]}">{icon(entry["icon"])}{name}</a>'
     if heatmap is None:
         return f'<figure class="profile {entry["id"]}"><figcaption>{caption}</figcaption></figure>'
     svg_markup, summary, subtitle = heatmap
     if subtitle:
-        caption += f' <span class="heatmap-subtitle">{subtitle}</span>'
+        caption += f'<span class="heatmap-subtitle">{subtitle}</span>'
     return (
         f'<figure class="profile heatmap {entry["id"]}"><figcaption>{caption}</figcaption>'
         f'<div class="heatmap-scroll">{svg_markup}</div>'

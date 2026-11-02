@@ -544,9 +544,19 @@ pre code {
 }
 
 .heatmap-subtitle {
-  margin-inline-start: 0.35em;
+  display: block;
+  margin-top: 0.15rem;
   font-weight: 400;
   color: var(--muted);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .heatmap-scroll {
