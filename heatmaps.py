@@ -286,7 +286,7 @@ def render(data, github_login):
         posts = sum(days[key]["count"] for key in in_range if key in days)
         sections.append(figure(
             "x",
-            "X",
+            "Twitter",
             f"https://x.com/{data['x']['username']}",
             svg(weeks, describe_x, "Posts on X over the last year"),
             f"{plural(posts, 'post')} in the last year",
