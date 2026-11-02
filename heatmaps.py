@@ -1,7 +1,8 @@
 """GitHub, Strava, X and LinkedIn activity heatmaps, rendered as SVG at build time.
 
 GitHub, Strava and LinkedIn are fetched on every build (cached locally for an hour).
-X comes from data/x.json, which x_activity.py keeps up to date.
+X comes from data/x.json, which x_activity.py keeps up to date. Without API access,
+LinkedIn comes from data/linkedin.json, imported from an analytics export by linkedin_import.py.
 """
 
 import json
@@ -20,6 +21,7 @@ from icons import icon
 ROOT = Path(__file__).resolve().parent
 CACHE = ROOT / ".cache" / "heatmaps.json"
 X_DATA = ROOT / "data" / "x.json"
+LINKEDIN_DATA = ROOT / "data" / "linkedin.json"
 CACHE_TTL = 3600
 WEEKS = 53
 RUN_TYPES = {"Run", "TrailRun", "VirtualRun"}
@@ -223,6 +225,10 @@ def load(github_login, timezone_name):
         x["days"] = {day: {"count": count} for day, count in x["days"].items()}
         quartile_levels(x["days"], "count")
         data["x"] = x
+    if "linkedin" not in data and LINKEDIN_DATA.exists():
+        linkedin = json.loads(LINKEDIN_DATA.read_text())
+        quartile_levels(linkedin["days"], "engagements")
+        data["linkedin"] = linkedin
     return data
 
 
@@ -367,12 +373,18 @@ def linkedin_heatmap(data, weeks, in_range):
         entry = days.get(day.isoformat())
         if not entry:
             return 0, ["No engagement"]
-        parts = [plural(entry[field], noun) for field, noun in
-                 (("reactions", "reaction"), ("comments", "comment"), ("reposts", "repost")) if entry[field]]
-        return entry["level"], [plural(entry["engagements"], "engagement"), " · ".join(parts)]
+        lines = [plural(entry["engagements"], "engagement")]
+        if "impressions" in entry:
+            lines.append(plural(entry["impressions"], "impression"))
+        else:
+            lines.append(" · ".join(plural(entry[field], noun) for field, noun in
+                         (("reactions", "reaction"), ("comments", "comment"), ("reposts", "repost")) if entry[field]))
+        return entry["level"], lines
 
     total = sum(days[key]["engagements"] for key in in_range if key in days)
     summary = f"{plural(total, 'engagement')} in the last year"
+    if "updated" in data:
+        summary += f", as of {pretty(date.fromisoformat(data['updated']))}"
     return svg(weeks, describe, "LinkedIn engagement over the last year"), summary, "engagement"
 
 
