@@ -71,7 +71,7 @@ def main():
     stored = json.loads(DATA.read_text()) if DATA.exists() else {"days": {}}
     days = stored["days"] | imported
     cutoff = (date.today() - timedelta(days=KEEP_DAYS)).isoformat()
-    days = {day: entry for day, entry in sorted(days.items()) if day >= cutoff and entry["engagements"]}
+    days = {day: entry for day, entry in sorted(days.items()) if day >= cutoff and (entry["engagements"] or entry["impressions"])}
 
     DATA.parent.mkdir(exist_ok=True)
     DATA.write_text(json.dumps({"updated": max(imported), "days": days}, indent=1) + "\n")

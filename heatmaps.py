@@ -373,7 +373,7 @@ def linkedin_heatmap(data, weeks, in_range):
         entry = days.get(day.isoformat())
         if not entry:
             return 0, ["No engagement"]
-        lines = [plural(entry["engagements"], "engagement")]
+        lines = [plural(entry["engagements"], "engagement") if entry["engagements"] else "No engagement"]
         if "impressions" in entry:
             lines.append(plural(entry["impressions"], "impression"))
         else:
