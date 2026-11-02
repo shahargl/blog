@@ -473,7 +473,7 @@ def build():
 
 
 def snapshot():
-    files = [ROOT / "build.py", ROOT / "heatmaps.py", *CONTENT.rglob("*"), *ASSETS.rglob("*"), *STATIC.rglob("*")]
+    files = [ROOT / "build.py", ROOT / "heatmaps.py", *(ROOT / "data").rglob("*"), *CONTENT.rglob("*"), *ASSETS.rglob("*"), *STATIC.rglob("*")]
     return {path: path.stat().st_mtime for path in files if path.is_file()}
 
 

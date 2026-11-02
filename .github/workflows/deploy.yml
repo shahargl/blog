@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
   actions: write
@@ -31,6 +31,21 @@ jobs:
           cache: pip
 
       - run: pip install -r requirements.txt
+
+      - name: Update X activity
+        if: github.event_name != 'pull_request'
+        run: |
+          python x_activity.py
+          if [ -n "$(git status --porcelain data)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data
+            git commit -m "chore: update x activity"
+            git pull --rebase
+            git push
+          fi
+        env:
+          X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
 
       - run: python build.py
         env:

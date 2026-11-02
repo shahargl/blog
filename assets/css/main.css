@@ -583,8 +583,61 @@ pre code {
 }
 
 
+.heatmap.x {
+  --h0: #ebedf0;
+  --h1: #c4c4c4;
+  --h2: #8a8a8a;
+  --h3: #4d4d4d;
+  --h4: #000000;
+}
+
+:root[data-theme="dark"] .heatmap.x {
+  --h0: #1a1a1a;
+  --h1: #4d4d4d;
+  --h2: #8a8a8a;
+  --h3: #c4c4c4;
+  --h4: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .heatmap.x {
+    --h0: #1a1a1a;
+    --h1: #4d4d4d;
+    --h2: #8a8a8a;
+    --h3: #c4c4c4;
+    --h4: #ffffff;
+  }
+}
+
 .heatmap rect {
   rx: 2px;
+  cursor: default;
+}
+
+.heatmap rect:hover {
+  stroke: var(--fg);
+  stroke-width: 1;
+}
+
+.heatmap-tip {
+  position: fixed;
+  z-index: 10;
+  pointer-events: none;
+  padding: 0.45rem 0.65rem;
+  background: var(--fg);
+  color: var(--bg);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  line-height: 1.55;
+  white-space: pre;
+}
+
+.heatmap-tip[hidden] {
+  display: none;
+}
+
+.heatmap-tip-title {
+  font-weight: 700;
 }
 
 .heatmap-meta {
