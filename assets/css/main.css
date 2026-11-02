@@ -107,9 +107,11 @@ button.link:hover {
   text-decoration: none;
 }
 
-button.link[aria-pressed="true"] {
-  text-decoration: none;
-  font-weight: 700;
+.icon {
+  width: 1em;
+  height: 1em;
+  flex: none;
+  fill: currentColor;
 }
 
 /* header */
@@ -132,6 +134,40 @@ button.link[aria-pressed="true"] {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-decoration: none;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.theme-toggle {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3em;
+  border: 0;
+  background: none;
+  color: var(--fg);
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.theme-toggle .icon {
+  display: none;
+}
+
+.theme-toggle[data-mode="auto"] .mode-auto,
+.theme-toggle[data-mode="light"] .mode-light,
+.theme-toggle[data-mode="dark"] .mode-dark {
+  display: block;
 }
 
 .site-nav ul {
@@ -478,15 +514,33 @@ pre code {
 
 /* heatmaps */
 
+.profile {
+  margin: 1.25rem 0;
+}
+
 .heatmap {
   margin: 1.75rem 0 2rem;
 }
 
-.heatmap figcaption {
+.profile figcaption {
   font-family: var(--mono);
   font-size: 0.85rem;
   font-weight: 700;
+}
+
+.heatmap figcaption {
   margin-bottom: 0.5rem;
+}
+
+.profile-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+}
+
+.profile-link .icon {
+  width: 1.1em;
+  height: 1.1em;
 }
 
 .heatmap-subtitle {
@@ -500,7 +554,7 @@ pre code {
   direction: ltr;
 }
 
-.heatmap svg {
+.heatmap-scroll svg {
   display: block;
   width: 100%;
   min-width: 560px;
@@ -612,6 +666,32 @@ pre code {
     --h2: #0f4c75;
     --h3: #1577b4;
     --h4: #1da1f2;
+  }
+}
+
+.heatmap.linkedin {
+  --h0: #ebedf0;
+  --h1: #b6d4f2;
+  --h2: #6fa6e0;
+  --h3: #2f7fd0;
+  --h4: #0a66c2;
+}
+
+:root[data-theme="dark"] .heatmap.linkedin {
+  --h0: #1a1a1a;
+  --h1: #0a2540;
+  --h2: #0d3f73;
+  --h3: #1060ad;
+  --h4: #378fe9;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .heatmap.linkedin {
+    --h0: #1a1a1a;
+    --h1: #0a2540;
+    --h2: #0d3f73;
+    --h3: #1060ad;
+    --h4: #378fe9;
   }
 }
 

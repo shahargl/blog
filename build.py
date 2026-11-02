@@ -25,6 +25,7 @@ import markdown
 import yaml
 
 import heatmaps
+from icons import icon
 
 ROOT = Path(__file__).resolve().parent
 CONTENT = ROOT / "content"
@@ -40,8 +41,13 @@ SITE = {
     "image": "/avatar.jpg",
     "github": "shahargl",
     "x": "shaharglazner",
-    "linkedin": "https://www.linkedin.com/in/shahar-glazner-29294654/",
-    "source": "https://github.com/shahargl/blog",
+    "profiles": [
+        {"id": "github", "name": "GitHub", "icon": "github", "url": "https://github.com/shahargl"},
+        {"id": "x", "name": "X", "icon": "twitter-x", "url": "https://x.com/shaharglazner"},
+        {"id": "strava", "name": "Strava", "icon": "strava", "url": "https://www.strava.com/athletes/17293893"},
+        {"id": "linkedin", "name": "LinkedIn", "icon": "linkedin",
+         "url": "https://www.linkedin.com/in/shahar-glazner-29294654/"},
+    ],
     "timezone": "Asia/Jerusalem",
     "per_page": 10,
     "feed_limit": 20,
@@ -180,10 +186,16 @@ def header(current):
         return f'<li><a href="{url}"{marker}>{name}</a></li>'
 
     links = "".join(link(name, url) for name, url in SITE["nav"])
+    toggle = (
+        '<button type="button" class="theme-toggle" data-theme-toggle data-mode="auto" '
+        'aria-label="Color scheme: auto" title="Color scheme: auto">'
+        f'{icon("circle-half", "icon mode-auto")}{icon("sun", "icon mode-light")}{icon("moon", "icon mode-dark")}'
+        "</button>"
+    )
     return (
         '<header class="site-header">'
         f'<a class="site-title" href="/">{escape(SITE["title"])}</a>'
-        f'<nav class="site-nav" aria-label="Main"><ul>{links}</ul></nav>'
+        f'<nav class="site-nav" aria-label="Main"><ul>{links}</ul>{toggle}</nav>'
         "</header>"
     )
 
@@ -199,16 +211,6 @@ def footer(page):
     return (
         f'<footer class="site-footer">{actions}'
         f"<p>&copy; Copyright {datetime.now().year} by {escape(SITE['author'])}.</p>"
-        "<p>Contact me via "
-        f'<a href="https://x.com/{SITE["x"]}">x</a>, '
-        f'<a href="https://github.com/{SITE["github"]}">github</a> or '
-        f'<a href="{SITE["linkedin"]}">linkedin</a>. '
-        'Subscribe via <a href="/feed.xml">rss</a>. '
-        f'Source on <a href="{SITE["source"]}">github</a>.</p>'
-        '<p class="theme-switch">Color scheme: '
-        '<button type="button" class="link" data-theme-choice="auto">auto</button>, '
-        '<button type="button" class="link" data-theme-choice="light">light</button>, '
-        '<button type="button" class="link" data-theme-choice="dark">dark</button>.</p>'
         "</footer>"
     )
 
@@ -347,7 +349,9 @@ def page_markdown(page):
         lines.append(f"date: {page.date:%Y-%m-%d}")
     if page.tags:
         lines.append(f"tags: {json.dumps(page.tags, ensure_ascii=False)}")
-    lines += [f"url: {abs_url(page.url)}", "---", "", f"# {page.title}", "", page.body, ""]
+    profiles = "\n".join(f"* [{entry['name']}]({entry['url']})" for entry in SITE["profiles"])
+    body = page.body.replace(HEATMAPS_MARKER, profiles)
+    lines += [f"url: {abs_url(page.url)}", "---", "", f"# {page.title}", "", body, ""]
     return "\n".join(lines)
 
 
@@ -413,7 +417,7 @@ def load_env():
 def build():
     posts, pages = load_content()
     if any(HEATMAPS_MARKER in page.html for page in posts + pages):
-        section = heatmaps.render(heatmaps.load(SITE["github"], SITE["timezone"]), SITE["github"])
+        section = heatmaps.render(heatmaps.load(SITE["github"], SITE["timezone"]), SITE["profiles"])
         for page in posts + pages:
             page.html = page.html.replace(HEATMAPS_MARKER, section)
     if OUT.exists():
@@ -473,7 +477,7 @@ def build():
 
 
 def snapshot():
-    files = [ROOT / "build.py", ROOT / "heatmaps.py", *(ROOT / "data").rglob("*"), *CONTENT.rglob("*"), *ASSETS.rglob("*"), *STATIC.rglob("*")]
+    files = [ROOT / "build.py", ROOT / "heatmaps.py", ROOT / "icons.py", *(ROOT / "data").rglob("*"), *CONTENT.rglob("*"), *ASSETS.rglob("*"), *STATIC.rglob("*")]
     return {path: path.stat().st_mtime for path in files if path.is_file()}
 
 

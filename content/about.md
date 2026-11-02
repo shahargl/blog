@@ -16,11 +16,7 @@ somewhere between backend systems, observability and developer tooling.
 This blog is where I write about engineering, open source and whatever else
 I happen to be thinking about.
 
-If you want to contact me, you can reach me via one of the following
-communication channels:
-
-* find me on [GitHub](https://github.com/shahargl)
-* reach out to me on [X](https://x.com/shaharglazner)
-* connect with me on [LinkedIn](https://www.linkedin.com/in/shahar-glazner-29294654/)
+If you want to reach out, you can find me, and what I've been up to lately,
+on any of these:
 
 <!-- heatmaps -->

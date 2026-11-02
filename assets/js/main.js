@@ -34,15 +34,19 @@
       localStorage.setItem("theme", theme);
       root.dataset.theme = theme;
     }
-    document.querySelectorAll("[data-theme-choice]").forEach(function (button) {
-      button.setAttribute("aria-pressed", String(button.dataset.themeChoice === theme));
+    document.querySelectorAll("[data-theme-toggle]").forEach(function (button) {
+      var label = "Color scheme: " + theme;
+      button.dataset.mode = theme;
+      button.setAttribute("aria-label", label);
+      button.title = label;
     });
     syncGiscus();
   }
 
-  document.querySelectorAll("[data-theme-choice]").forEach(function (button) {
+  var themeCycle = { auto: "light", light: "dark", dark: "auto" };
+  document.querySelectorAll("[data-theme-toggle]").forEach(function (button) {
     button.addEventListener("click", function () {
-      applyTheme(button.dataset.themeChoice);
+      applyTheme(themeCycle[storedTheme()]);
     });
   });
   darkQuery.addEventListener("change", syncGiscus);
@@ -73,7 +77,7 @@
     element.scrollLeft = element.scrollWidth;
   });
 
-  var heatmaps = document.querySelectorAll(".heatmap svg");
+  var heatmaps = document.querySelectorAll(".heatmap-scroll svg");
   if (heatmaps.length) {
     var tip = document.createElement("div");
     tip.className = "heatmap-tip";

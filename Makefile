@@ -4,7 +4,7 @@ BIN := $(VENV)/bin
 
 export GITHUB_TOKEN ?= $(shell gh auth token 2>/dev/null)
 
-.PHONY: build serve post clean strava-auth
+.PHONY: build serve post clean strava-auth linkedin-auth
 
 $(BIN)/python: requirements.txt
 	$(PYTHON) -m venv $(VENV)
@@ -27,7 +27,10 @@ post:
 	echo "created $$file"
 
 strava-auth:
-	$(PYTHON) strava_auth.py
+	$(PYTHON) auth.py strava
+
+linkedin-auth:
+	$(PYTHON) auth.py linkedin
 
 clean:
 	rm -rf public .cache

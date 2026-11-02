@@ -1,18 +1,21 @@
-"""GitHub, Strava and X activity heatmaps, rendered as SVG at build time.
+"""GitHub, Strava, X and LinkedIn activity heatmaps, rendered as SVG at build time.
 
-GitHub and Strava are fetched on every build (cached locally for an hour).
+GitHub, Strava and LinkedIn are fetched on every build (cached locally for an hour).
 X comes from data/x.json, which x_activity.py keeps up to date.
 """
 
 import json
 import os
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import date, datetime, timedelta, timezone
 from html import escape
 from pathlib import Path
 from zoneinfo import ZoneInfo
+
+from icons import icon
 
 ROOT = Path(__file__).resolve().parent
 CACHE = ROOT / ".cache" / "heatmaps.json"
@@ -108,6 +111,75 @@ def fetch_strava(today):
     return {"athlete": athlete["id"], "days": days}
 
 
+LINKEDIN_API = "https://api.linkedin.com/rest"
+LINKEDIN_VERSION = "202609"
+LINKEDIN_METRICS = {"REACTION": "reactions", "COMMENT": "comments", "RESHARE": "reposts"}
+
+
+class Expired(Exception):
+    pass
+
+
+def linkedin_access_token():
+    if os.environ.get("LINKEDIN_REFRESH_TOKEN"):
+        body = urllib.parse.urlencode({
+            "grant_type": "refresh_token",
+            "refresh_token": os.environ["LINKEDIN_REFRESH_TOKEN"],
+            "client_id": os.environ.get("LINKEDIN_CLIENT_ID", ""),
+            "client_secret": os.environ.get("LINKEDIN_CLIENT_SECRET", ""),
+        }).encode()
+        request = urllib.request.Request(
+            "https://www.linkedin.com/oauth/v2/accessToken",
+            data=body,
+            headers={"Content-Type": "application/x-www-form-urlencoded", "User-Agent": "shahar.blog"},
+        )
+        with urllib.request.urlopen(request, timeout=30) as response:
+            return json.load(response)["access_token"]
+    if os.environ.get("LINKEDIN_ACCESS_TOKEN"):
+        return os.environ["LINKEDIN_ACCESS_TOKEN"]
+    raise NotConfigured("LINKEDIN_REFRESH_TOKEN or LINKEDIN_ACCESS_TOKEN not set")
+
+
+def fetch_linkedin(today):
+    headers = {
+        "Authorization": f"Bearer {linkedin_access_token()}",
+        "Linkedin-Version": LINKEDIN_VERSION,
+        "X-Restli-Protocol-Version": "2.0.0",
+    }
+    start = today - timedelta(weeks=WEEKS, days=7)
+    end = today + timedelta(days=1)
+    date_range = (
+        f"(start:(day:{start.day},month:{start.month},year:{start.year}),"
+        f"end:(day:{end.day},month:{end.month},year:{end.year}))"
+    )
+    days = {}
+    for metric, field in LINKEDIN_METRICS.items():
+        offset = 0
+        while True:
+            url = (
+                f"{LINKEDIN_API}/memberCreatorPostAnalytics?q=me&queryType={metric}&aggregation=DAILY"
+                f"&dateRange={date_range}&start={offset}&count=100"
+            )
+            try:
+                page = request_json(url, headers=headers)
+            except urllib.error.HTTPError as error:
+                if error.code == 401:
+                    raise Expired("LinkedIn token expired, run `make linkedin-auth`") from error
+                raise
+            elements = page.get("elements", [])
+            for element in elements:
+                begin = element["dateRange"]["start"]
+                key = f"{begin['year']}-{begin['month']:02}-{begin['day']:02}"
+                day = days.setdefault(key, {"reactions": 0, "comments": 0, "reposts": 0})
+                day[field] += element.get("count", 0)
+            offset += len(elements)
+            if len(elements) < 100:
+                break
+    for day in days.values():
+        day["engagements"] = day["reactions"] + day["comments"] + day["reposts"]
+    return {"days": {key: day for key, day in days.items() if day["engagements"]}}
+
+
 def quartile_levels(days, key):
     values = sorted(day[key] for day in days.values() if day[key] > 0)
     if not values:
@@ -124,15 +196,25 @@ def load(github_login, timezone_name):
     else:
         today = datetime.now(ZoneInfo(timezone_name)).date()
         data = {"updated": datetime.now(timezone.utc).isoformat(timespec="minutes"), "today": today.isoformat()}
-        for name, fetch in (("github", lambda: fetch_github(github_login)), ("strava", lambda: fetch_strava(today))):
+        sources = {
+            "github": lambda: fetch_github(github_login),
+            "strava": lambda: fetch_strava(today),
+            "linkedin": lambda: fetch_linkedin(today),
+        }
+        for name, fetch in sources.items():
             try:
                 data[name] = fetch()
+            except Expired as error:
+                # A lapsed token hides the section instead of blocking every deploy.
+                print(f"::warning::{error}" if os.environ.get("CI") else f"skipping {name} heatmap: {error}")
             except Exception as error:
                 if os.environ.get("CI") and not isinstance(error, NotConfigured):
                     raise
                 print(f"skipping {name} heatmap: {error}")
         if "strava" in data:
             quartile_levels(data["strava"]["days"], "km")
+        if "linkedin" in data:
+            quartile_levels(data["linkedin"]["days"], "engagements")
         CACHE.parent.mkdir(exist_ok=True)
         CACHE.write_text(json.dumps(data))
 
@@ -214,88 +296,102 @@ def legend():
     return f'<span class="legend">less {cells} more</span>'
 
 
-def figure(kind, title, link, svg_markup, summary, subtitle=None):
-    caption = f'<a href="{link}">{title}</a>'
+def profile(entry, heatmap=None):
+    caption = f'<a class="profile-link" href="{entry["url"]}">{icon(entry["icon"])}<span>{entry["name"]}</span></a>'
+    if heatmap is None:
+        return f'<figure class="profile {entry["id"]}"><figcaption>{caption}</figcaption></figure>'
+    svg_markup, summary, subtitle = heatmap
     if subtitle:
         caption += f' <span class="heatmap-subtitle">{subtitle}</span>'
     return (
-        f'<figure class="heatmap {kind}"><figcaption>{caption}</figcaption>'
+        f'<figure class="profile heatmap {entry["id"]}"><figcaption>{caption}</figcaption>'
         f'<div class="heatmap-scroll">{svg_markup}</div>'
         f'<p class="meta heatmap-meta"><span>{summary}</span>{legend()}</p></figure>'
     )
 
 
-def render(data, github_login):
-    if not data or not ({"github", "strava", "x"} & data.keys()):
-        return ""
+def github_heatmap(data, weeks, in_range):
+    days = data["days"]
+
+    def describe(day):
+        entry = days.get(day.isoformat(), {"count": 0, "level": 0})
+        return entry["level"], [plural(entry["count"], "contribution") if entry["count"] else "No contributions"]
+
+    summary = f"{data['total']:,} contributions in the last year"
+    return svg(weeks, describe, "GitHub contributions over the last year"), summary, None
+
+
+def strava_heatmap(data, weeks, in_range):
+    days = data["days"]
+
+    def row(label, km, seconds, run_pace="", climb=0):
+        line = f"{label:<6}{km:>5.1f} km  {run_pace:>8}  {duration(seconds):>7}"
+        return line + (f"  +{climb} m" if climb >= 50 else "")
+
+    def describe(day):
+        entry = days.get(day.isoformat())
+        if not entry:
+            return 0, ["Rest day"]
+        lines = [
+            row("Trail" if run["type"] == "TrailRun" else "Run", run["km"], run["seconds"],
+                pace(run["seconds"], run["km"]), run["climb"])
+            for run in entry["runs"]
+        ]
+        if len(entry["runs"]) > 1:
+            lines.append(row("Total", entry["km"], entry["seconds"], pace(entry["seconds"], entry["km"])))
+        return entry["level"], lines
+
+    recent = [days[key] for key in in_range if key in days]
+    runs = sum(len(day["runs"]) for day in recent)
+    km = sum(day["km"] for day in recent)
+    seconds = sum(day["seconds"] for day in recent)
+    summary = f"{plural(runs, 'run')}, {km:,.0f} km, avg {pace(seconds, km)} in the last year"
+    return svg(weeks, describe, "Runs over the last year"), summary, "running"
+
+
+def x_heatmap(data, weeks, in_range):
+    days = data["days"]
+
+    def describe(day):
+        entry = days.get(day.isoformat(), {"count": 0, "level": 0})
+        return entry["level"], [plural(entry["count"], "post") if entry["count"] else "No posts"]
+
+    posts = sum(days[key]["count"] for key in in_range if key in days)
+    return svg(weeks, describe, "Posts on X over the last year"), f"{plural(posts, 'post')} in the last year", None
+
+
+def linkedin_heatmap(data, weeks, in_range):
+    days = data["days"]
+
+    def describe(day):
+        entry = days.get(day.isoformat())
+        if not entry:
+            return 0, ["No engagement"]
+        parts = [plural(entry[field], noun) for field, noun in
+                 (("reactions", "reaction"), ("comments", "comment"), ("reposts", "repost")) if entry[field]]
+        return entry["level"], [plural(entry["engagements"], "engagement"), " · ".join(parts)]
+
+    total = sum(days[key]["engagements"] for key in in_range if key in days)
+    summary = f"{plural(total, 'engagement')} in the last year"
+    return svg(weeks, describe, "LinkedIn engagement over the last year"), summary, "engagement"
+
+
+HEATMAPS = {"github": github_heatmap, "strava": strava_heatmap, "x": x_heatmap, "linkedin": linkedin_heatmap}
+
+
+def render(data, profiles):
+    """Every profile becomes a logo link, with its heatmap underneath when there is data for it."""
     weeks = calendar_weeks(date.fromisoformat(data["today"]))
     in_range = {day.isoformat() for week in weeks for day in week if day}
     sections = []
+    for entry in profiles:
+        source = data.get(entry["id"])
+        heatmap = HEATMAPS[entry["id"]](source, weeks, in_range) if source else None
+        sections.append(profile(entry, heatmap))
 
-    if "github" in data:
-        days = data["github"]["days"]
-
-        def describe_github(day):
-            entry = days.get(day.isoformat(), {"count": 0, "level": 0})
-            return entry["level"], [plural(entry["count"], "contribution") if entry["count"] else "No contributions"]
-
-        sections.append(figure(
-            "github",
-            "GitHub",
-            f"https://github.com/{github_login}",
-            svg(weeks, describe_github, "GitHub contributions over the last year"),
-            f"{data['github']['total']:,} contributions in the last year",
-        ))
-
-    if "strava" in data:
-        days = data["strava"]["days"]
-
-        def describe_strava(day):
-            entry = days.get(day.isoformat())
-            if not entry:
-                return 0, ["Rest day"]
-            def row(label, km, seconds, run_pace="", climb=0):
-                line = f"{label:<6}{km:>5.1f} km  {run_pace:>8}  {duration(seconds):>7}"
-                return line + (f"  +{climb} m" if climb >= 50 else "")
-
-            lines = [
-                row("Trail" if run["type"] == "TrailRun" else "Run", run["km"], run["seconds"],
-                    pace(run["seconds"], run["km"]), run["climb"])
-                for run in entry["runs"]
-            ]
-            if len(entry["runs"]) > 1:
-                lines.append(row("Total", entry["km"], entry["seconds"], pace(entry["seconds"], entry["km"])))
-            return entry["level"], lines
-
-        recent = [days[key] for key in in_range if key in days]
-        runs = sum(len(day["runs"]) for day in recent)
-        km = sum(day["km"] for day in recent)
-        seconds = sum(day["seconds"] for day in recent)
-        sections.append(figure(
-            "strava",
-            "Strava",
-            f"https://www.strava.com/athletes/{data['strava']['athlete']}",
-            svg(weeks, describe_strava, "Runs over the last year"),
-            f"{plural(runs, 'run')}, {km:,.0f} km, avg {pace(seconds, km)} in the last year",
-            subtitle="running",
-        ))
-
-    if "x" in data:
-        days = data["x"]["days"]
-
-        def describe_x(day):
-            entry = days.get(day.isoformat(), {"count": 0, "level": 0})
-            return entry["level"], [plural(entry["count"], "post") if entry["count"] else "No posts"]
-
-        posts = sum(days[key]["count"] for key in in_range if key in days)
-        sections.append(figure(
-            "x",
-            "X",
-            f"https://x.com/{data['x']['username']}",
-            svg(weeks, describe_x, "Posts on X over the last year"),
-            f"{plural(posts, 'post')} in the last year",
-        ))
-
-    updated = datetime.fromisoformat(data["updated"])
-    stamp = f"{updated:%b} {updated.day}, {updated.year} {updated:%H:%M} UTC"
-    return "".join(sections) + f'<p class="meta">Updated automatically. Last refresh: {stamp}.</p>'
+    footer = ""
+    if HEATMAPS.keys() & data.keys():
+        updated = datetime.fromisoformat(data["updated"])
+        stamp = f"{updated:%b} {updated.day}, {updated.year} {updated:%H:%M} UTC"
+        footer = f'<p class="meta">Heatmaps update automatically. Last refresh: {stamp}.</p>'
+    return f'<div class="profiles">{"".join(sections)}</div>{footer}'
