@@ -736,6 +736,51 @@ pre code {
   cursor: default;
 }
 
+.heatmap.travel {
+  --h0: #ebedf0;
+}
+
+:root[data-theme="dark"] .heatmap.travel {
+  --h0: #1a1a1a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .heatmap.travel {
+    --h0: #1a1a1a;
+  }
+}
+
+.heatmap image.flag {
+  clip-path: inset(0 round 2px);
+  pointer-events: none;
+}
+
+.heatmap rect.flag {
+  fill: transparent;
+  stroke: rgb(128 128 128 / 0.35);
+  stroke-width: 0.5;
+}
+
+.heatmap rect.abroad {
+  fill: var(--muted);
+}
+
+.legend.flags {
+  flex-wrap: wrap;
+  gap: 0.2rem 0.6rem;
+}
+
+.flag-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.flag-key img {
+  border-radius: 2px;
+  box-shadow: 0 0 0 0.5px rgb(128 128 128 / 0.5);
+}
+
 .heatmap rect:hover {
   stroke: var(--fg);
   stroke-width: 1;

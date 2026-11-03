@@ -4,7 +4,7 @@ BIN := $(VENV)/bin
 
 export GITHUB_TOKEN ?= $(shell gh auth token 2>/dev/null)
 
-.PHONY: build serve post clean strava-auth linkedin-auth linkedin-import
+.PHONY: build serve post clean strava-auth linkedin-auth linkedin-import timeline-import
 
 $(BIN)/python: requirements.txt
 	$(PYTHON) -m venv $(VENV)
@@ -34,6 +34,9 @@ linkedin-auth:
 
 linkedin-import:
 	$(PYTHON) linkedin_import.py $(file)
+
+timeline-import:
+	set -a; . ./.env; set +a; $(PYTHON) timeline_import.py $(file) && $(PYTHON) travel.py
 
 clean:
 	rm -rf public .cache

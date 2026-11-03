@@ -17,6 +17,7 @@ from html import escape
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from countries import name as country_name
 from icons import icon
 
 ROOT = Path(__file__).resolve().parent
@@ -24,6 +25,9 @@ CACHE = ROOT / ".cache" / "heatmaps.json"
 X_DATA = ROOT / "data" / "x.json"
 LINKEDIN_DATA = ROOT / "data" / "linkedin.json"
 GARMIN_DATA = ROOT / "data" / "garmin.json"
+TRAVEL_DATA = ROOT / "data" / "travel.json"
+# Natural Earth draws most of Jerusalem inside the West Bank, so both count as home.
+HOME_COUNTRIES = {"IL", "PS"}
 CACHE_TTL = 3600
 WEEKS = 53
 RUN_TYPES = {"Run", "TrailRun", "VirtualRun"}
@@ -227,6 +231,8 @@ def load(github_login, timezone_name):
         x["days"] = {day: {"count": count} for day, count in x["days"].items()}
         quartile_levels(x["days"], "count")
         data["x"] = x
+    if TRAVEL_DATA.exists():
+        data["travel"] = json.loads(TRAVEL_DATA.read_text())
     if GARMIN_DATA.exists():
         rides = json.loads(GARMIN_DATA.read_text())["days"]
         garmin = {"days": {day: {"rides": value, "minutes": sum(ride["minutes"] for ride in value)}
@@ -282,7 +288,15 @@ def svg(weeks, describe, label):
             level, lines = describe(day)
             tip = escape("\n".join([f"{day:%a}, {pretty(day)}", *lines]))
             x, y = LEFT + column * STEP, TOP + row * STEP
-            parts.append(f'<rect x="{x}" y="{y}" width="{CELL}" height="{CELL}" class="l{level}" data-tip="{tip}"/>')
+            if isinstance(level, int):
+                css_class = f"l{level}"
+            elif level == "abroad":
+                css_class = "abroad"
+            else:
+                # The flag sits under a transparent cell that keeps the tooltip and hover outline.
+                parts.append(f'<image href="/flags/{level}.svg" x="{x}" y="{y}" width="{CELL}" height="{CELL}" class="flag"/>')
+                css_class = "flag"
+            parts.append(f'<rect x="{x}" y="{y}" width="{CELL}" height="{CELL}" class="{css_class}" data-tip="{tip}"/>')
     parts.append("</svg>")
     return "".join(parts)
 
@@ -318,13 +332,13 @@ def profile(entry, heatmap=None):
         caption = f'<span class="profile-link">{icon(entry["icon"])}{name}</span>'
     if heatmap is None:
         return f'<figure class="profile {entry["id"]}"><figcaption>{caption}</figcaption></figure>'
-    svg_markup, summary, subtitle = heatmap
+    svg_markup, summary, subtitle, *key = heatmap
     if subtitle:
         caption += f'<span class="heatmap-subtitle">{subtitle}</span>'
     return (
         f'<figure class="profile heatmap {entry["id"]}"><figcaption>{caption}</figcaption>'
         f'<div class="heatmap-scroll">{svg_markup}</div>'
-        f'<p class="meta heatmap-meta"><span>{summary}</span>{legend()}</p></figure>'
+        f'<p class="meta heatmap-meta"><span>{summary}</span>{key[0] if key else legend()}</p></figure>'
     )
 
 
@@ -419,7 +433,43 @@ def garmin_heatmap(data, weeks, in_range):
     return svg(weeks, describe, "Bike commuting over the last year"), summary, "detected by Garmin"
 
 
+def utc(minutes):
+    hours, rest = divmod(abs(minutes), 60)
+    return f"UTC{'+' if minutes >= 0 else '-'}{hours}" + (f":{rest:02}" if rest else "")
+
+
+def travel_heatmap(data, weeks, in_range):
+    days, abroad = data["days"], data["abroad"]
+
+    def describe(day):
+        key = day.isoformat()
+        if key in days:
+            codes = days[key]
+            away = [code for code in codes if code not in HOME_COUNTRIES]
+            return away[0].lower(), [" → ".join(country_name(code) for code in codes)]
+        if key in abroad:
+            return "abroad", [f"Abroad ({utc(abroad[key])})"]
+        return 0, ["Home"]
+
+    counts = {}
+    for key in in_range:
+        for code in days.get(key, []):
+            if code not in HOME_COUNTRIES:
+                counts[code] = counts.get(code, 0) + 1
+    away_days = len([key for key in in_range if key in days or key in abroad])
+    places = f"{len(counts)} {'country' if len(counts) == 1 else 'countries'}"
+    summary = f"{places}, {plural(away_days, 'day')} abroad in the last year"
+    flags = "".join(
+        f'<span class="flag-key" title="{escape(country_name(code))}: {plural(count, "day")}">'
+        f'<img src="/flags/{code.lower()}.svg" alt="{escape(country_name(code))}" width="12" height="12">{count}</span>'
+        for code, count in sorted(counts.items(), key=lambda item: -item[1])
+    )
+    return (svg(weeks, describe, "Countries I was in over the last year"), summary, "countries",
+            f'<span class="legend flags">{flags}</span>')
+
+
 HEATMAPS = {
+    "travel": travel_heatmap,
     "github": github_heatmap,
     "strava": strava_heatmap,
     "x": x_heatmap,

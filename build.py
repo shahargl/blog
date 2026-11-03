@@ -46,6 +46,7 @@ SITE = {
         {"id": "x", "name": "X", "icon": "twitter-x", "url": "https://x.com/shaharglazner", "logo_only": True},
         {"id": "strava", "name": "Strava", "icon": "strava", "url": "https://www.strava.com/athletes/17293893"},
         {"id": "garmin", "name": "Bike commuting", "icon": "bicycle"},
+        {"id": "travel", "name": "Travel", "icon": "airplane"},
         {"id": "linkedin", "name": "LinkedIn", "icon": "linkedin",
          "url": "https://www.linkedin.com/in/shahar-glazner-29294654/"},
     ],

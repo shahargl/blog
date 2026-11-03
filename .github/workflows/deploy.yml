@@ -32,16 +32,17 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-      - name: Update X and Garmin activity
+      - name: Update X, Garmin and travel activity
         if: github.event_name != 'pull_request'
         run: |
           python x_activity.py
-          # Unofficial API: a failure keeps the last committed rides instead of blocking the deploy.
+          # Unofficial API: a failure keeps the last committed data instead of blocking the deploy.
           python garmin_activity.py || echo "::warning::Garmin update failed, keeping previous data"
-          if [ -n "$(git status --porcelain data)" ]; then
+          python travel.py || echo "::warning::Travel update failed, keeping previous data"
+          if [ -n "$(git status --porcelain data static/flags)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add data
+            git add data static/flags
             git commit -m "chore: update activity data"
             git pull --rebase
             git push
@@ -49,6 +50,10 @@ jobs:
         env:
           X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
           GARMIN_TOKENS: ${{ secrets.GARMIN_TOKENS }}
+          COUNTRY_RELABEL: ${{ secrets.COUNTRY_RELABEL }}
+          STRAVA_CLIENT_ID: ${{ secrets.STRAVA_CLIENT_ID }}
+          STRAVA_CLIENT_SECRET: ${{ secrets.STRAVA_CLIENT_SECRET }}
+          STRAVA_REFRESH_TOKEN: ${{ secrets.STRAVA_REFRESH_TOKEN }}
 
       - run: python build.py
         env:
