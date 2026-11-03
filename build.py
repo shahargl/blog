@@ -45,6 +45,7 @@ SITE = {
         {"id": "github", "name": "GitHub", "icon": "github", "url": "https://github.com/shahargl"},
         {"id": "x", "name": "X", "icon": "twitter-x", "url": "https://x.com/shaharglazner", "logo_only": True},
         {"id": "strava", "name": "Strava", "icon": "strava", "url": "https://www.strava.com/athletes/17293893"},
+        {"id": "garmin", "name": "Bike commuting", "icon": "bicycle"},
         {"id": "linkedin", "name": "LinkedIn", "icon": "linkedin",
          "url": "https://www.linkedin.com/in/shahar-glazner-29294654/"},
     ],
@@ -349,7 +350,7 @@ def page_markdown(page):
         lines.append(f"date: {page.date:%Y-%m-%d}")
     if page.tags:
         lines.append(f"tags: {json.dumps(page.tags, ensure_ascii=False)}")
-    profiles = "\n".join(f"* [{entry['name']}]({entry['url']})" for entry in SITE["profiles"])
+    profiles = "\n".join(f"* [{entry['name']}]({entry['url']})" for entry in SITE["profiles"] if entry.get("url"))
     body = page.body.replace(HEATMAPS_MARKER, profiles)
     lines += [f"url: {abs_url(page.url)}", "---", "", f"# {page.title}", "", body, ""]
     return "\n".join(lines)

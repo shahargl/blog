@@ -679,6 +679,32 @@ pre code {
   }
 }
 
+.heatmap.garmin {
+  --h0: #ebedf0;
+  --h1: #ddd0fb;
+  --h2: #b9a0f5;
+  --h3: #8f66ea;
+  --h4: #6633cc;
+}
+
+:root[data-theme="dark"] .heatmap.garmin {
+  --h0: #1a1a1a;
+  --h1: #2e1d57;
+  --h2: #4c2f91;
+  --h3: #7448d4;
+  --h4: #a47cff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .heatmap.garmin {
+    --h0: #1a1a1a;
+    --h1: #2e1d57;
+    --h2: #4c2f91;
+    --h3: #7448d4;
+    --h4: #a47cff;
+  }
+}
+
 .heatmap.linkedin {
   --h0: #ebedf0;
   --h1: #b6d4f2;

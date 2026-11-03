@@ -1,8 +1,9 @@
-"""GitHub, Strava, X and LinkedIn activity heatmaps, rendered as SVG at build time.
+"""GitHub, Strava, X, LinkedIn and Garmin activity heatmaps, rendered as SVG at build time.
 
 GitHub, Strava and LinkedIn are fetched on every build (cached locally for an hour).
 X comes from data/x.json, which x_activity.py keeps up to date. Without API access,
 LinkedIn comes from data/linkedin.json, imported from an analytics export by linkedin_import.py.
+Garmin's detected bike rides come from data/garmin.json, kept up to date by garmin_activity.py.
 """
 
 import json
@@ -22,6 +23,7 @@ ROOT = Path(__file__).resolve().parent
 CACHE = ROOT / ".cache" / "heatmaps.json"
 X_DATA = ROOT / "data" / "x.json"
 LINKEDIN_DATA = ROOT / "data" / "linkedin.json"
+GARMIN_DATA = ROOT / "data" / "garmin.json"
 CACHE_TTL = 3600
 WEEKS = 53
 RUN_TYPES = {"Run", "TrailRun", "VirtualRun"}
@@ -225,6 +227,12 @@ def load(github_login, timezone_name):
         x["days"] = {day: {"count": count} for day, count in x["days"].items()}
         quartile_levels(x["days"], "count")
         data["x"] = x
+    if GARMIN_DATA.exists():
+        rides = json.loads(GARMIN_DATA.read_text())["days"]
+        garmin = {"days": {day: {"rides": value, "minutes": sum(ride["minutes"] for ride in value)}
+                           for day, value in rides.items()}}
+        quartile_levels(garmin["days"], "minutes")
+        data["garmin"] = garmin
     if "linkedin" not in data and LINKEDIN_DATA.exists():
         linkedin = json.loads(LINKEDIN_DATA.read_text())
         quartile_levels(linkedin["days"], "engagements")
@@ -304,7 +312,10 @@ def legend():
 
 def profile(entry, heatmap=None):
     name = f'<span class="visually-hidden">{entry["name"]}</span>' if entry.get("logo_only") else f'<span>{entry["name"]}</span>'
-    caption = f'<a class="profile-link" href="{entry["url"]}">{icon(entry["icon"])}{name}</a>'
+    if entry.get("url"):
+        caption = f'<a class="profile-link" href="{entry["url"]}">{icon(entry["icon"])}{name}</a>'
+    else:
+        caption = f'<span class="profile-link">{icon(entry["icon"])}{name}</span>'
     if heatmap is None:
         return f'<figure class="profile {entry["id"]}"><figcaption>{caption}</figcaption></figure>'
     svg_markup, summary, subtitle = heatmap
@@ -389,7 +400,32 @@ def linkedin_heatmap(data, weeks, in_range):
     return svg(weeks, describe, "LinkedIn engagement over the last year"), summary, "engagement"
 
 
-HEATMAPS = {"github": github_heatmap, "strava": strava_heatmap, "x": x_heatmap, "linkedin": linkedin_heatmap}
+def garmin_heatmap(data, weeks, in_range):
+    days = data["days"]
+
+    def describe(day):
+        entry = days.get(day.isoformat())
+        if not entry:
+            return 0, ["No rides"]
+        lines = [f"{ride['start']}  {ride['minutes']:>3} min" for ride in entry["rides"]]
+        if len(entry["rides"]) > 1:
+            lines.append(f"Total  {entry['minutes']:>3} min")
+        return entry["level"], lines
+
+    recent = [days[key] for key in in_range if key in days]
+    rides = sum(len(day["rides"]) for day in recent)
+    hours = sum(day["minutes"] for day in recent) / 60
+    summary = f"{plural(rides, 'ride')}, {hours:,.0f} hours on the bike in the last year"
+    return svg(weeks, describe, "Bike commuting over the last year"), summary, "detected by Garmin"
+
+
+HEATMAPS = {
+    "github": github_heatmap,
+    "strava": strava_heatmap,
+    "x": x_heatmap,
+    "linkedin": linkedin_heatmap,
+    "garmin": garmin_heatmap,
+}
 
 
 def render(data, profiles):
