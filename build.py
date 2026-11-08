@@ -38,7 +38,9 @@ SITE = {
     "title": "Shahar Glazner",
     "author": "Shahar Glazner",
     "description": "Thoughts and writings by Shahar Glazner on software, open source and building things.",
-    "image": "/avatar.jpg",
+    # Under 300px wide so WhatsApp shows a small thumbnail instead of a full-width preview.
+    "image": "/avatar-preview.jpg",
+    "image_size": 280,
     "github": "shahargl",
     "x": "shaharglazner",
     "profiles": [
@@ -241,6 +243,8 @@ def layout(body, *, url, assets, title=None, description=None, current="blog", p
 <meta property="og:site_name" content="{escape(SITE['title'])}">
 <meta property="og:type" content="{'article' if is_post else 'website'}">
 <meta property="og:image" content="{abs_url(SITE['image'])}">
+<meta property="og:image:width" content="{SITE['image_size']}">
+<meta property="og:image:height" content="{SITE['image_size']}">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:creator" content="@{SITE['x']}">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
