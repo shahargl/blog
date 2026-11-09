@@ -40,7 +40,7 @@ A cool example of that last point is our allergy to AI slop. We all know that fe
 
 We've even developed a whole language around it - slop, slop canon, slop grande, and an entire meme culture. We've developed a collective taste for what feels like slop without ever explicitly defining what that means.
 
-One answer, of course, is that all of this is temporary. With Opus n+1, we're done.
+Anyway, going back to the observations list - you could argue, of course, that all of this is temporary. With Opus n+1, we're done.
 
 That might be true. But I've been hearing this for three years now, and somehow we are still here. So maybe in order to predict when we'll become obsolete we need to understand why we haven't become obsolete yet.
 
