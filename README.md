@@ -29,6 +29,7 @@ Requires Python 3.10+. `make` creates a `.venv` with the dependencies from
 title: "Post title"
 date: 2026-11-01T12:00:00+02:00
 description: "Shown on the blog index and in link previews"
+image: /images/post.jpg  # link preview image from static/, defaults to the avatar
 tags: ["python", "open-source"]
 draft: true              # skipped by the build
 rtl: true                # right-to-left layout for Hebrew posts

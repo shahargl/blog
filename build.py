@@ -86,6 +86,7 @@ class Page:
     url: str
     date: datetime | None = None
     description: str = ""
+    image: str = ""
     tags: list[str] = field(default_factory=list)
     aliases: list[str] = field(default_factory=list)
     rtl: bool = False
@@ -163,6 +164,7 @@ def read_page(path, kind):
         url=url,
         date=page_date,
         description=meta.get("description", ""),
+        image=meta.get("image", ""),
         tags=[str(tag) for tag in meta.get("tags", [])],
         aliases=meta.get("aliases", []),
         rtl=bool(meta.get("rtl")),
@@ -228,6 +230,16 @@ def layout(body, *, url, assets, title=None, description=None, current="blog", p
         extra_head += f'<link rel="alternate" type="text/markdown" title="Markdown" href="{page.markdown_url}">'
     if is_post:
         extra_head += f'<meta property="article:published_time" content="{page.date.isoformat()}">'
+    if page and page.image:
+        image_meta = f'<meta property="og:image" content="{abs_url(page.image)}">'
+        card = "summary_large_image"
+    else:
+        image_meta = (
+            f'<meta property="og:image" content="{abs_url(SITE["image"])}">'
+            f'<meta property="og:image:width" content="{SITE["image_size"]}">'
+            f'<meta property="og:image:height" content="{SITE["image_size"]}">'
+        )
+        card = "summary"
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -242,10 +254,8 @@ def layout(body, *, url, assets, title=None, description=None, current="blog", p
 <meta property="og:url" content="{abs_url(url)}">
 <meta property="og:site_name" content="{escape(SITE['title'])}">
 <meta property="og:type" content="{'article' if is_post else 'website'}">
-<meta property="og:image" content="{abs_url(SITE['image'])}">
-<meta property="og:image:width" content="{SITE['image_size']}">
-<meta property="og:image:height" content="{SITE['image_size']}">
-<meta name="twitter:card" content="summary">
+{image_meta}
+<meta name="twitter:card" content="{card}">
 <meta name="twitter:creator" content="@{SITE['x']}">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">

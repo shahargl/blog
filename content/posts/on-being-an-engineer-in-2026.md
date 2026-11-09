@@ -2,6 +2,7 @@
 title: "On Being an Engineer in 2026"
 date: 2026-11-08T15:50:00+02:00
 tags: ["ai", "engineering"]
+image: /images/on-being-an-engineer-in-2026.jpg
 ---
 
 ## Are We Still Needed?
